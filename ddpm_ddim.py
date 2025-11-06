@@ -46,20 +46,20 @@ class Sampler():
         self.timestep_map = []
         last_alpha_cumprod = 1.0
         
-        # TODO: Initialize an empty list to store the new beta values --> This is to collect the new betas corresponding to the chosen timesteps.
+        #  Initialize an empty list to store the new beta values --> This is to collect the new betas corresponding to the chosen timesteps.
         new_betas = []
 
         for i, alpha_cumprod in enumerate(self.alphas_cumprod):
             # pass # Delete this
             # TODO: Check if the current timestep index 'i' is part of the selected timesteps (use_timesteps)
             if i in use_timesteps:    
-            # TODO: If so, compute the corresponding beta value and append it to the empty list
+    
                 beta_new = 1.0 - (float(alpha_cumprod) / float(last_alpha_cumprod))
                 beta_new = max(min(beta_new, 0.999), 1e-12)
                 new_betas.append(beta_new)
             # TODO: Update 'last_alpha_cumprod' to the current 'alpha_cumprod'
                 last_alpha_cumprod = float(alpha_cumprod)
-            # TODO: Keep track of which original timesteps are being used by appending 'i' to 'self.timestep_map'
+           
                 self.timestep_map.append(i)
 
         # TODO: Convert 'new_betas' into a PyTorch tensor and store it in 'self.betas'
@@ -87,7 +87,7 @@ class Sampler():
     
     def predict_x0_hat(self, x_t, t, model_output):
         ############################
-        # TODO: Implement the function predicting the clean denoised estimate x_{0|t} --> step (c and d)
+        # Implementation of the function predicting the clean denoised estimate x_{0|t}
         ############################
         Ct_arr = 1.0 / torch.sqrt(self.alphas_cumprod)
         Dt_arr = - torch.sqrt(1.0 - self.alphas_cumprod) / torch.sqrt(self.alphas_cumprod)
@@ -104,13 +104,8 @@ class Sampler():
         model_output, model_var_values = torch.split(model_output, x_t.shape[1], dim=1)
         model_log_variance = self.get_variance(model_var_values, t)
         
-        ############################
-        # TODO: Implement DDPM sampling --> step (b, c, d, e)
-        # Hint: Think about step (a) which you are expected to find --> At · xt + Bt · ˆϵθ(xt, t) + σtz (z = 0 if t = 0)
-        # Now after you calculate At, you should perform << utils.extract_and_expand(At, t, x_t) >> before running At * x_t
-        # Otherwise, you will face some dimensionality errors
-        # Also note that self.betas = β, self.alphas = α, self.alphas_cumprod = \bar{α} and self.alphas_cumprod_prev[t] = \bar{α_t-1}
-        # Note that extract_and_expand() function already selects the index you input to the function (always input t)
+      
+        # Implementing DDPM sampling 
         ############################
         At_arr = 1.0 / torch.sqrt(self.alphas)  # shape: [#steps]
         Bt_arr = - self.betas / (torch.sqrt(self.alphas) * torch.sqrt(1.0 - self.alphas_cumprod))
@@ -138,7 +133,7 @@ class Sampler():
         model_output, _ = torch.split(model_output, x_t.shape[1], dim=1)
         
         ############################
-        # TODO: Implement DDIM sampling --> step (f)
+        # Implementing DDIM sampling 
         ############################
         eta = self.conf.eta
 
