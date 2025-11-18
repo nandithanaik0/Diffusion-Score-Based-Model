@@ -80,9 +80,7 @@ def forward_sde(timesteps, n_samples, dt):
     x0_pdf = mixture_pdf(x_grid)
     x_pdf[0] = x0_pdf
     for t in range(1, timesteps):
-        ############################
-        # TODO: Implement the forward SDE
-        ############################
+        # Implementing the forward SDE
         s = t - 1
         drift = f(x[s], s)                          # VP-SDE drift: -0.5 * beta(t) * x
         diffusion = g(s)                            # VP-SDE diffusion: sqrt(beta(t))
@@ -101,9 +99,7 @@ def reverse_sde(timesteps, n_samples, dt):
     x0_pdf = mixture_pdf(x_grid)
     x_pdf[0] = x0_pdf
     for t in range(timesteps - 1, 0, -1):
-        ############################
-        # TODO: Implement the reverse SDE
-        ############################
+        # Implement the reverse SDE
         score = grad_log_p_xt(x[t], t)              # ∇_x log p_t(x)
         drift = f(x[t], t) - (g(t) ** 2) * score    # reverse-time drift: f - g^2 * score
         diffusion = g(t)                            # same diffusion coefficient
