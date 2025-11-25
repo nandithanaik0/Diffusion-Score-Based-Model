@@ -50,23 +50,20 @@ class Sampler():
         new_betas = []
 
         for i, alpha_cumprod in enumerate(self.alphas_cumprod):
-            # pass # Delete this
-            # TODO: Check if the current timestep index 'i' is part of the selected timesteps (use_timesteps)
+            # Checking if the current timestep index 'i' is part of the selected timesteps (use_timesteps)
             if i in use_timesteps:    
     
                 beta_new = 1.0 - (float(alpha_cumprod) / float(last_alpha_cumprod))
                 beta_new = max(min(beta_new, 0.999), 1e-12)
                 new_betas.append(beta_new)
-            # TODO: Update 'last_alpha_cumprod' to the current 'alpha_cumprod'
+            #  Updating 'last_alpha_cumprod' to the current 'alpha_cumprod'
                 last_alpha_cumprod = float(alpha_cumprod)
            
                 self.timestep_map.append(i)
 
-        # TODO: Convert 'new_betas' into a PyTorch tensor and store it in 'self.betas'
+        #Convert 'new_betas' into a PyTorch tensor and store it in 'self.betas'
         self.betas = torch.tensor(new_betas, dtype=torch.float64)
-        # TODO: After updating betas, Recompute the related alpha terms to refresh alpha values
-        # Hint: A helper function is already implemented in this hw3_step1_main.py file to refresh the alpha values
-        # Understand which function does that and use it here.
+        #Updating betas, Recompute the related alpha terms to refresh alpha values
         self.alpha_init()
         
         return torch.tensor(self.timestep_map)
